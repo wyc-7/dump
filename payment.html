@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<!-- お得な支払い・ポイント管理アプリ v0.6 -->
+<!-- お得な支払い・ポイント管理アプリ v0.6.1 -->
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>お得な支払い・ポイント管理 v0.6</title>
+<title>お得な支払い・ポイント管理 v0.6.1</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Yu Gothic',sans-serif;background:#f5f5f0;color:#1a1a1a;font-size:15px;line-height:1.6}
@@ -20,11 +20,13 @@ h1{font-size:21px;font-weight:700;margin-bottom:.2rem}
 .s-input{width:100%;height:40px;padding:0 14px;font-size:14px;border:1px solid #d0cfc8;border-radius:8px;outline:none;background:#fff;color:#1a1a1a;display:block}
 .s-input:focus{border-color:#888}
 .cat-row{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
-.cat-btn{font-size:12px;padding:4px 12px;border-radius:20px;border:1px solid #d0cfc8;cursor:pointer;background:#fff;color:#666}
-.cat-btn:hover,.cat-btn.on{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
-.tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
-.tag{font-size:12px;padding:3px 11px;border-radius:20px;border:1px solid #d0cfc8;cursor:pointer;color:#666;background:#fff}
-.tag:hover,.tag.on{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+.cat-btn{font-size:13px;font-weight:600;padding:6px 14px;border-radius:8px;border:1.5px solid #d0cfc8;cursor:pointer;background:#fff;color:#444}
+.cat-btn:hover{background:#f0efea;border-color:#aaa}
+.cat-btn.on{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+.tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px;padding-top:10px;border-top:1px dashed #e5e4de}
+.tags-label{font-size:11px;color:#aaa;width:100%;margin-bottom:2px}
+.tag{font-size:12px;padding:3px 11px;border-radius:20px;border:1px solid #e0dfd8;cursor:pointer;color:#888;background:#fafaf8}
+.tag:hover,.tag.on{background:#555;color:#fff;border-color:#555}
 .rc{border:1px solid #e8e7e2;border-radius:10px;padding:11px 15px;margin-bottom:7px;display:flex;align-items:flex-start;gap:11px}
 .rc.best{border:2px solid #1d9e75;background:#f8fffe}
 .rc-rank{font-size:17px;font-weight:700;min-width:22px;color:#bbb;padding-top:2px}
@@ -87,7 +89,7 @@ h1{font-size:21px;font-weight:700;margin-bottom:.2rem}
 <body>
 <div class="wrap">
   <h1>お得な支払い・ポイント管理</h1>
-  <p class="sub">クレカ・電子決済・ポイントを横断して最適な支払い方法を見つける &nbsp;·&nbsp; <span style="font-size:11px;color:#bbb">v0.6</span></p>
+  <p class="sub">クレカ・電子決済・ポイントを横断して最適な支払い方法を見つける &nbsp;·&nbsp; <span style="font-size:11px;color:#bbb">v0.6.1</span></p>
 
   <div class="nav">
     <button class="nav-btn active" onclick="go('pay',this)">最適な支払いを探す</button>
@@ -103,7 +105,7 @@ h1{font-size:21px;font-weight:700;margin-bottom:.2rem}
       <div class="sec-title">店舗・サービスを入力</div>
       <input class="s-input" type="text" id="q-pay" placeholder="例：セブンイレブン、マクドナルド、楽天市場…" oninput="activePayStore='';activePayCat='';renderPayCatBtns();renderPayTags();renderPay()">
       <div class="cat-row" id="pay-cat-btns"></div>
-      <div class="tags" id="pay-tags"></div>
+      <div class="tags" id="pay-tags" style="display:none"></div>
     </div>
     <div id="pay-result" style="display:none">
       <div class="sec">
@@ -491,10 +493,15 @@ function selPayCat(id){
 }
 
 function renderPayTags(){
+  const tagsEl=document.getElementById('pay-tags');
+  if(!activePayCat){tagsEl.style.display='none';tagsEl.innerHTML='';return;}
   const s=new Set();
-  cards.forEach(c=>c.stores.filter(r=>!activePayCat||r.cat===activePayCat).forEach(r=>s.add(r.store)));
-  payments.forEach(p=>p.stores.filter(r=>!activePayCat||r.cat===activePayCat).forEach(r=>s.add(r.store)));
-  document.getElementById('pay-tags').innerHTML=[...s].sort().map(st=>`<span class="tag${activePayStore===st?' on':''}" onclick="selPayStore('${st.replace(/'/g,"\\'")}')">${st}</span>`).join('');
+  cards.forEach(c=>c.stores.filter(r=>r.cat===activePayCat).forEach(r=>s.add(r.store)));
+  payments.forEach(p=>p.stores.filter(r=>r.cat===activePayCat).forEach(r=>s.add(r.store)));
+  const catLabel=CATS.find(c=>c.id===activePayCat)?.label||'';
+  tagsEl.innerHTML=`<div class="tags-label">${catLabel}の店舗・サービス</div>`+[...s].sort().map(st=>`<span class="tag${activePayStore===st?' on':''}" onclick="selPayStore('${st.replace(/'/g,"\\'")}')">${st}</span>`).join('');
+  tagsEl.style.display='flex';
+  tagsEl.style.flexWrap='wrap';
 }
 
 function selPayStore(s){activePayStore=activePayStore===s?'':s;document.getElementById('q-pay').value='';renderPayTags();renderPay();}
