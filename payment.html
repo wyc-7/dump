@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<!-- お得な支払い・ポイント管理アプリ v0.6.1 -->
+<!-- お得な支払い・ポイント管理アプリ v0.6.2 -->
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>お得な支払い・ポイント管理 v0.6.1</title>
+<title>お得な支払い・ポイント管理 v0.6.2</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Yu Gothic',sans-serif;background:#f5f5f0;color:#1a1a1a;font-size:15px;line-height:1.6}
@@ -89,7 +89,7 @@ h1{font-size:21px;font-weight:700;margin-bottom:.2rem}
 <body>
 <div class="wrap">
   <h1>お得な支払い・ポイント管理</h1>
-  <p class="sub">クレカ・電子決済・ポイントを横断して最適な支払い方法を見つける &nbsp;·&nbsp; <span style="font-size:11px;color:#bbb">v0.6.1</span></p>
+  <p class="sub">クレカ・電子決済・ポイントを横断して最適な支払い方法を見つける &nbsp;·&nbsp; <span style="font-size:11px;color:#bbb">v0.6.2</span></p>
 
   <div class="nav">
     <button class="nav-btn active" onclick="go('pay',this)">最適な支払いを探す</button>
@@ -513,18 +513,21 @@ function renderPay(){
   if(!target){sec.style.display='none';return;}
   sec.style.display='block';
   document.getElementById('pay-lbl').textContent=`「${target}」での最適な支払い方法`;
-  const anyCardHit=cards.some(c=>c.stores.find(s=>match(s.store,target)));
-  const anyPayHit=payments.some(p=>p.stores.find(s=>match(s.store,target)));
-  if(!anyCardHit&&!anyPayHit){
-    document.getElementById('pay-tip').innerHTML='';
-    document.getElementById('pay-list').innerHTML=`<div class="no-res">「${target}」は登録されていません。<br>「設定・編集」から店舗を追加できます。</div>`;
-    return;
-  }
+
   let results=[];
+
+  // クレカ：登録店舗にヒットすれば優待率、なければ通常還元率で必ず全件表示
   cards.forEach(c=>{
     const m=c.stores.find(s=>match(s.store,target));
-    results.push({label:c.name,rate:m?m.rate:c.base,note:m?m.note:'通常ポイント',type:'card',color:c.color,icon:c.icon,combo:null,isDouble:false});
+    results.push({
+      label:c.name, rate:m?m.rate:c.base,
+      note:m?m.note:'通常ポイント（優待登録なし）',
+      type:'card', color:c.color, icon:c.icon, combo:null, isDouble:false,
+      isDefault:!m
+    });
   });
+
+  // 電子決済：登録がある（=使える）ものだけ表示
   payments.forEach(p=>{
     const m=p.stores.find(s=>match(s.store,target));
     if(!m)return;
@@ -533,19 +536,23 @@ function renderPay(){
       const cm=cc?cc.stores.find(s=>match(s.store,target)):null;
       const cardRate=cm?cm.rate:(p.linkedCardBonus||0.5);
       const total=m.rate+cardRate;
-      results.push({label:p.name,rate:total,note:m.note,type:'pay',color:p.color,icon:p.icon,isDouble:true,combo:`${p.name} ${m.rate.toFixed(1)}% ＋ ${cc?cc.name:'カード'} ${cardRate.toFixed(1)}% ＝ 合計 ${total.toFixed(1)}%`});
+      results.push({label:p.name,rate:total,note:m.note,type:'pay',color:p.color,icon:p.icon,isDouble:true,isDefault:false,combo:`${p.name} ${m.rate.toFixed(1)}% ＋ ${cc?cc.name:'カード'} ${cardRate.toFixed(1)}% ＝ 合計 ${total.toFixed(1)}%`});
     } else {
-      results.push({label:p.name,rate:m.rate,note:m.note,type:'pay',color:p.color,icon:p.icon,isDouble:false,combo:null});
+      results.push({label:p.name,rate:m.rate,note:m.note,type:'pay',color:p.color,icon:p.icon,isDouble:false,isDefault:false,combo:null});
     }
   });
+
   results.sort((a,b)=>b.rate-a.rate);
   const top=results[0].rate;
   const best=results[0];
+
   let tipHTML=`<strong>${best.label}</strong> が最もお得です（合計還元率 <strong>${best.rate.toFixed(1)}%</strong>）。`;
   if(best.isDouble)tipHTML+=`<br>楽天カードとの<strong>二重取り</strong>で、${best.combo}`;
+  if(best.isDefault)tipHTML+=`<br><span style="color:#aaa;font-size:12px">※ この店舗の優待登録はありません。通常還元率で比較しています。</span>`;
   document.getElementById('pay-tip').innerHTML=tipHTML;
+
   document.getElementById('pay-list').innerHTML=results.map((r,i)=>`
-    <div class="rc${r.rate===top&&i===0?' best':''}">
+    <div class="rc${r.rate===top&&i===0?' best':''}" style="${r.isDefault?'opacity:0.75':''}">
       <div class="rc-rank">${r.rate===top&&i===0?'★':i+1}</div>
       <div class="rc-body">
         <div class="rc-name">
@@ -554,6 +561,7 @@ function renderPay(){
           ${r.rate===top&&i===0?'<span class="b b-best">おすすめ</span>':''}
           ${r.isDouble?'<span class="b b-double">二重取り</span>':''}
           <span class="b ${r.type==='card'?'b-card':'b-pay'}">${r.type==='card'?'クレカ':'電子決済'}</span>
+          ${r.isDefault?'<span style="font-size:10px;color:#bbb">通常還元</span>':''}
         </div>
         <div class="rc-note">${r.note}</div>
         ${r.combo?`<div class="rc-combo">${r.combo}</div>`:''}
