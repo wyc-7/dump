@@ -499,22 +499,21 @@ function renderPay(){
 
   let results=[];
 
-  // クレカ
+  // クレカ：登録店舗にヒットした場合のみ追加
   cards.forEach(c=>{
     const m=c.stores.find(s=>match(s.store,target));
-    const rate=m?m.rate:c.base;
-    const note=m?m.note:'通常ポイント';
-    results.push({label:c.name,rate,note,type:'card',color:c.color,icon:c.icon,combo:null,isDouble:false});
+    if(!m) return;
+    results.push({label:c.name,rate:m.rate,note:m.note,type:'card',color:c.color,icon:c.icon,combo:null,isDouble:false});
   });
 
-  // 電子決済（単体＋二重取り）
+  // 電子決済：登録店舗にヒットした場合のみ追加
   payments.forEach(p=>{
     const m=p.stores.find(s=>match(s.store,target));
-    const appRate=m?m.rate:p.base;
-    const appNote=m?m.note:'通常還元';
+    if(!m) return;
+    const appRate=m.rate;
+    const appNote=m.note;
 
     if(p.linkedCard){
-      // 二重取り計算
       const cc=cards.find(c=>c.id===p.linkedCard);
       const cm=cc?cc.stores.find(s=>match(s.store,target)):null;
       const cardRate=cm?cm.rate:(p.linkedCardBonus||0.5);
@@ -527,6 +526,12 @@ function renderPay(){
       results.push({label:p.name,rate:appRate,note:appNote,type:'pay',color:p.color,icon:p.icon,isDouble:false,combo:null});
     }
   });
+
+  if(!results.length){
+    document.getElementById('pay-tip').innerHTML='';
+    document.getElementById('pay-list').innerHTML=`<div class="no-res">「${target}」は登録されていません。<br>「設定・編集」から店舗を追加できます。</div>`;
+    return;
+  }
 
   results.sort((a,b)=>b.rate-a.rate);
   const top=results[0].rate;
