@@ -340,6 +340,15 @@ let payments = [
     {store:'ウェルシア',rate:1.0,note:'通常還元',cat:'shopping'},
     {store:'Yahoo!ショッピング',rate:3.0,note:'PayPayポイント3倍',cat:'ec'},
     {store:'ビックカメラ',rate:1.0,note:'通常還元',cat:'shopping'},
+    {store:'東急百貨店',rate:0.5,note:'通常還元（ストアスキャン方式）',cat:'shopping'},
+    {store:'東急ストア',rate:0.5,note:'通常還元',cat:'shopping'},
+    {store:'マルイ・丸井・モディ',rate:0.5,note:'通常還元',cat:'shopping'},
+    {store:'アパホテル',rate:0.5,note:'フロント精算・オンライン予約両対応',cat:'hotel'},
+    {store:'東横イン',rate:0.5,note:'通常還元',cat:'hotel'},
+    {store:'松屋',rate:0.5,note:'通常還元',cat:'restaurant'},
+    {store:'サイゼリヤ',rate:0.5,note:'通常還元',cat:'restaurant'},
+    {store:'ガスト',rate:0.5,note:'通常還元',cat:'restaurant'},
+    {store:'すき家',rate:0.5,note:'通常還元',cat:'restaurant'},
    ]
   },
   {id:'rakutenpay',name:'楽天ペイ',color:'#bf0000',icon:'R',base:1.0,
@@ -353,6 +362,14 @@ let payments = [
     {store:'サンドラッグ',rate:1.5,note:'楽天ポイント還元',cat:'shopping'},
     {store:'松屋',rate:1.5,note:'楽天ポイント還元',cat:'restaurant'},
     {store:'ジョーシン',rate:1.5,note:'楽天ポイント還元',cat:'shopping'},
+    {store:'東急百貨店',rate:1.0,note:'楽天ポイント還元（全店対応済み）',cat:'shopping'},
+    {store:'東急ストア',rate:1.0,note:'楽天ポイント還元',cat:'shopping'},
+    {store:'アパホテル',rate:1.0,note:'フロント精算・オンライン予約両対応',cat:'hotel'},
+    {store:'東横イン',rate:1.0,note:'楽天ポイント還元',cat:'hotel'},
+    {store:'サイゼリヤ',rate:1.0,note:'楽天ポイント還元',cat:'restaurant'},
+    {store:'ガスト',rate:1.0,note:'楽天ポイント還元',cat:'restaurant'},
+    {store:'すき家',rate:1.0,note:'楽天ポイント還元',cat:'restaurant'},
+    // マルイは楽天ペイ未対応のため除外
    ]
   },
   {id:'dpay',name:'d払い',color:'#e00060',icon:'d',base:0.5,linkedCard:null,
@@ -364,6 +381,15 @@ let payments = [
     {store:'Amazon',rate:1.0,note:'d払い使用時',cat:'ec'},
     {store:'メルカリ',rate:0.5,note:'通常還元',cat:'ec'},
     {store:'高島屋',rate:1.0,note:'dポイント還元',cat:'shopping'},
+    {store:'東急百貨店',rate:0.5,note:'通常還元（全店対応済み）',cat:'shopping'},
+    {store:'東急ストア',rate:0.5,note:'通常還元',cat:'shopping'},
+    {store:'マルイ・丸井・モディ',rate:0.5,note:'通常還元',cat:'shopping'},
+    {store:'アパホテル',rate:0.5,note:'フロント精算・オンライン予約両対応',cat:'hotel'},
+    {store:'東横イン',rate:0.5,note:'通常還元',cat:'hotel'},
+    {store:'松屋',rate:0.5,note:'通常還元',cat:'restaurant'},
+    {store:'サイゼリヤ',rate:0.5,note:'通常還元',cat:'restaurant'},
+    {store:'ガスト',rate:0.5,note:'通常還元',cat:'restaurant'},
+    {store:'すき家',rate:0.5,note:'通常還元',cat:'restaurant'},
    ]
   }
 ];
@@ -450,7 +476,26 @@ const pointUses = {
 // ==============================
 // STATE
 // ==============================
-let activePayStore='', activeBenStore='', activePointType='', activeCat='';
+let activePayStore='', activeBenStore='', activePointType='', activeCat='', activePayCat='';
+
+function renderPayCatBtns(){
+  // 登録されている店舗が属するカテゴリのみ表示
+  const usedCats = new Set();
+  cards.forEach(c=>c.stores.forEach(s=>usedCats.add(s.cat)));
+  payments.forEach(p=>p.stores.forEach(s=>usedCats.add(s.cat)));
+  const visible = CATS.filter(c=>usedCats.has(c.id));
+  document.getElementById('pay-cat-btns').innerHTML =
+    visible.map(c=>`<button class="cat-btn${activePayCat===c.id?' on':''}" onclick="selPayCat('${c.id}')">${c.label}</button>`).join('');
+}
+
+function selPayCat(id){
+  activePayCat = activePayCat===id?'':id;
+  activePayStore = '';
+  document.getElementById('q-pay').value='';
+  renderPayCatBtns();
+  renderPayTags();
+  renderPay();
+}
 
 // ==============================
 // HELPERS
@@ -469,7 +514,7 @@ function go(page, el){
   ['pay','benefit','point','cat','edit'].forEach(p=>document.getElementById('pg-'+p).style.display=p===page?'block':'none');
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   el.classList.add('active');
-  if(page==='pay'){renderPayTags();renderPay();}
+  if(page==='pay'){renderPayCatBtns();renderPayTags();renderPay();}
   if(page==='benefit'){renderBenTags();renderBenefit();}
   if(page==='point') renderPointSel();
   if(page==='cat') renderCatBtns();
@@ -481,8 +526,8 @@ function go(page, el){
 // ==============================
 function renderPayTags(){
   const s=new Set();
-  cards.forEach(c=>c.stores.forEach(r=>s.add(r.store)));
-  payments.forEach(p=>p.stores.forEach(r=>s.add(r.store)));
+  cards.forEach(c=>c.stores.filter(r=>!activePayCat||r.cat===activePayCat).forEach(r=>s.add(r.store)));
+  payments.forEach(p=>p.stores.filter(r=>!activePayCat||r.cat===activePayCat).forEach(r=>s.add(r.store)));
   document.getElementById('pay-tags').innerHTML=[...s].sort().map(st=>
     `<span class="tag${activePayStore===st?' on':''}" onclick="selPayStore('${st.replace(/'/g,"\\'")}')">${st}</span>`
   ).join('');
@@ -497,22 +542,32 @@ function renderPay(){
   sec.style.display='block';
   document.getElementById('pay-lbl').textContent=`「${target}」での最適な支払い方法`;
 
+  // 店舗がどこかのデータに登録されているか確認
+  const anyCardHit = cards.some(c=>c.stores.find(s=>match(s.store,target)));
+  const anyPayHit  = payments.some(p=>p.stores.find(s=>match(s.store,target)));
+
+  if(!anyCardHit && !anyPayHit){
+    document.getElementById('pay-tip').innerHTML='';
+    document.getElementById('pay-list').innerHTML=`<div class="no-res">「${target}」は登録されていません。<br>「設定・編集」から店舗を追加できます。</div>`;
+    return;
+  }
+
   let results=[];
 
-  // クレカ：登録店舗にヒットした場合のみ追加
+  // クレカ：全カードを通常ポイント含めてリストアップ
   cards.forEach(c=>{
     const m=c.stores.find(s=>match(s.store,target));
-    if(!m) return;
-    results.push({label:c.name,rate:m.rate,note:m.note,type:'card',color:c.color,icon:c.icon,combo:null,isDouble:false});
+    const rate=m?m.rate:c.base;
+    const note=m?m.note:'通常ポイント';
+    results.push({label:c.name,rate,note,type:'card',color:c.color,icon:c.icon,combo:null,isDouble:false});
   });
 
-  // 電子決済：登録店舗にヒットした場合のみ追加
+  // 電子決済：その店舗で「使える」と登録されているものだけ追加
   payments.forEach(p=>{
     const m=p.stores.find(s=>match(s.store,target));
-    if(!m) return;
+    if(!m) return; // 登録がない＝その店で使えない扱い
     const appRate=m.rate;
     const appNote=m.note;
-
     if(p.linkedCard){
       const cc=cards.find(c=>c.id===p.linkedCard);
       const cm=cc?cc.stores.find(s=>match(s.store,target)):null;
@@ -526,12 +581,6 @@ function renderPay(){
       results.push({label:p.name,rate:appRate,note:appNote,type:'pay',color:p.color,icon:p.icon,isDouble:false,combo:null});
     }
   });
-
-  if(!results.length){
-    document.getElementById('pay-tip').innerHTML='';
-    document.getElementById('pay-list').innerHTML=`<div class="no-res">「${target}」は登録されていません。<br>「設定・編集」から店舗を追加できます。</div>`;
-    return;
-  }
 
   results.sort((a,b)=>b.rate-a.rate);
   const top=results[0].rate;
@@ -739,6 +788,7 @@ function addPayment(){
 }
 
 // 初期化
+renderPayCatBtns();
 renderPayTags();
 </script>
 </body>
