@@ -479,13 +479,12 @@ const pointUses = {
 let activePayStore='', activeBenStore='', activePointType='', activeCat='', activePayCat='';
 
 function renderPayCatBtns(){
-  // 登録されている店舗が属するカテゴリのみ表示
   const usedCats = new Set();
-  cards.forEach(c=>c.stores.forEach(s=>usedCats.add(s.cat)));
-  payments.forEach(p=>p.stores.forEach(s=>usedCats.add(s.cat)));
+  cards.forEach(c=>c.stores.forEach(s=>{ if(s.cat) usedCats.add(s.cat); }));
+  payments.forEach(p=>p.stores.forEach(s=>{ if(s.cat) usedCats.add(s.cat); }));
   const visible = CATS.filter(c=>usedCats.has(c.id));
   document.getElementById('pay-cat-btns').innerHTML =
-    visible.map(c=>`<button class="cat-btn${activePayCat===c.id?' on':''}" onclick="selPayCat('${c.id}')">${c.label}</button>`).join('');
+    (visible.length ? visible : CATS).map(c=>`<button class="cat-btn${activePayCat===c.id?' on':''}" onclick="selPayCat('${c.id}')">${c.label}</button>`).join('');
 }
 
 function selPayCat(id){
@@ -790,6 +789,7 @@ function addPayment(){
 // 初期化
 renderPayCatBtns();
 renderPayTags();
+renderPay();
 </script>
 </body>
 </html>
