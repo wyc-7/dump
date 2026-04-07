@@ -1,32 +1,30 @@
 <!DOCTYPE html>
-<!-- お得な支払い・ポイント管理アプリ v0.5 -->
+<!-- お得な支払い・ポイント管理アプリ v0.6 -->
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>お得な支払い・ポイント管理 v0.5</title>
+<title>お得な支払い・ポイント管理 v0.6</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Yu Gothic',sans-serif;background:#f5f5f0;color:#1a1a1a;font-size:15px;line-height:1.6}
 .wrap{max-width:1000px;margin:0 auto;padding:1.5rem 1rem}
 h1{font-size:21px;font-weight:700;margin-bottom:.2rem}
 .sub{font-size:13px;color:#999;margin-bottom:1.2rem}
-/* nav */
 .nav{display:flex;gap:5px;margin-bottom:1rem;flex-wrap:wrap}
-.nav-btn{padding:7px 15px;font-size:13px;font-weight:500;border-radius:8px;border:1px solid #d0cfc8;cursor:pointer;background:#fff;color:#666;transition:all .12s}
+.nav-btn{padding:7px 15px;font-size:13px;font-weight:500;border-radius:8px;border:1px solid #d0cfc8;cursor:pointer;background:#fff;color:#666}
 .nav-btn:hover{background:#f0efea}
 .nav-btn.active{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
-/* section */
 .sec{background:#fff;border:1px solid #e5e4de;border-radius:12px;padding:1rem 1.25rem;margin-bottom:.75rem}
-.sec-title{font-size:12px;font-weight:600;color:#aaa;letter-spacing:.04em;margin-bottom:10px;text-transform:uppercase}
-/* search */
-.s-row{display:flex;gap:8px;margin-bottom:8px}
-.s-row input{flex:1;height:40px;padding:0 14px;font-size:14px;border:1px solid #d0cfc8;border-radius:8px;outline:none;background:#fff;color:#1a1a1a}
-.s-row input:focus{border-color:#888}
+.sec-title{font-size:12px;font-weight:600;color:#aaa;letter-spacing:.04em;margin-bottom:10px}
+.s-input{width:100%;height:40px;padding:0 14px;font-size:14px;border:1px solid #d0cfc8;border-radius:8px;outline:none;background:#fff;color:#1a1a1a;display:block}
+.s-input:focus{border-color:#888}
+.cat-row{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.cat-btn{font-size:12px;padding:4px 12px;border-radius:20px;border:1px solid #d0cfc8;cursor:pointer;background:#fff;color:#666}
+.cat-btn:hover,.cat-btn.on{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
 .tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
 .tag{font-size:12px;padding:3px 11px;border-radius:20px;border:1px solid #d0cfc8;cursor:pointer;color:#666;background:#fff}
 .tag:hover,.tag.on{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
-/* result card */
 .rc{border:1px solid #e8e7e2;border-radius:10px;padding:11px 15px;margin-bottom:7px;display:flex;align-items:flex-start;gap:11px}
 .rc.best{border:2px solid #1d9e75;background:#f8fffe}
 .rc-rank{font-size:17px;font-weight:700;min-width:22px;color:#bbb;padding-top:2px}
@@ -38,7 +36,6 @@ h1{font-size:21px;font-weight:700;margin-bottom:.2rem}
 .rc-rate{font-size:20px;font-weight:700;text-align:right;white-space:nowrap}
 .rc.best .rc-rate{color:#0a7a50}
 .rc-rate-lbl{font-size:10px;color:#aaa;text-align:right;margin-top:1px}
-/* badges */
 .b{display:inline-flex;align-items:center;font-size:11px;padding:2px 8px;border-radius:20px;font-weight:600;white-space:nowrap}
 .b-best{background:#e1f5ee;color:#085041}
 .b-double{background:#eeedfe;color:#3c3489}
@@ -47,12 +44,6 @@ h1{font-size:21px;font-weight:700;margin-bottom:.2rem}
 .b-discount{background:#faeeda;color:#633806}
 .b-service{background:#fbeaf0;color:#72243e}
 .b-point{background:#e6f1fb;color:#0c447c}
-.b-travel{background:#eeedfe;color:#3c3489}
-/* category */
-.cat-row{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:4px}
-.cat-btn{font-size:12px;padding:4px 12px;border-radius:20px;border:1px solid #d0cfc8;cursor:pointer;background:#fff;color:#666}
-.cat-btn:hover,.cat-btn.on{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
-/* point */
 .pt-sel{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
 .pt-btn{padding:6px 16px;font-size:13px;border-radius:20px;border:1px solid #d0cfc8;cursor:pointer;background:#fff;color:#666;font-weight:500}
 .pt-btn:hover{background:#f0efea}
@@ -64,30 +55,26 @@ h1{font-size:21px;font-weight:700;margin-bottom:.2rem}
 .use-store{font-size:13px;min-width:160px;color:#1a1a1a;padding-top:1px}
 .use-note{font-size:12px;color:#555;flex:1;line-height:1.55}
 .use-cond{font-size:11px;color:#aaa;margin-top:1px}
-/* benefit */
 .benefit-card{border:1px solid #e8e7e2;border-radius:10px;padding:11px 15px;margin-bottom:7px}
 .bc-name{font-size:14px;font-weight:600;margin-bottom:7px;display:flex;align-items:center;gap:6px}
 .bc-row{display:flex;align-items:flex-start;gap:6px;padding:4px 0;border-bottom:1px solid #f5f4f0}
 .bc-row:last-child{border-bottom:none}
 .bc-detail{font-size:13px;flex:1}
 .bc-cond{font-size:11px;color:#aaa;margin-top:2px}
-/* cat list */
 .cl-group{margin-bottom:14px}
 .cl-head{font-size:13px;font-weight:700;color:#1a1a1a;margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid #eee;display:flex;align-items:center;gap:6px}
 .cl-row{display:flex;align-items:flex-start;gap:8px;padding:5px 0;border-bottom:1px solid #f5f4f0}
 .cl-row:last-child{border-bottom:none}
 .cl-store{font-size:12px;color:#555;min-width:150px}
 .cl-right{flex:1}
-/* edit */
 .edit-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:10px}
 .ec{border:1px solid #e5e4de;border-radius:10px;padding:12px}
 .ec-head{font-size:14px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:7px}
 .ec-icon{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;flex-shrink:0}
-.slbl{font-size:11px;font-weight:600;color:#aaa;margin:8px 0 5px;letter-spacing:.04em;text-transform:uppercase}
+.slbl{font-size:11px;font-weight:600;color:#aaa;margin:8px 0 5px;letter-spacing:.04em}
 .erow{display:flex;align-items:center;gap:4px;margin-bottom:5px;flex-wrap:wrap}
 .erow input[type=text]{flex:1;min-width:80px;height:28px;padding:0 7px;font-size:12px;border:1px solid #d0cfc8;border-radius:6px;background:#fff;color:#1a1a1a}
 .erow input[type=number]{width:52px;height:28px;padding:0 5px;font-size:12px;border:1px solid #d0cfc8;border-radius:6px;background:#fff;color:#1a1a1a}
-.erow select{height:28px;padding:0 5px;font-size:12px;border:1px solid #d0cfc8;border-radius:6px;background:#fff;color:#1a1a1a}
 .sm{font-size:11px;padding:2px 7px;border-radius:6px;border:1px solid #d0cfc8;cursor:pointer;background:#fff;color:#666}
 .sm:hover{background:#f5f5f0}
 .addbtn{font-size:12px;padding:4px 11px;border-radius:6px;border:1px solid #d0cfc8;cursor:pointer;background:#fff;color:#666;margin-top:4px}
@@ -100,7 +87,7 @@ h1{font-size:21px;font-weight:700;margin-bottom:.2rem}
 <body>
 <div class="wrap">
   <h1>お得な支払い・ポイント管理</h1>
-  <p class="sub">クレカ・電子決済・ポイントを横断して最適な支払い方法を見つける &nbsp;·&nbsp; <span style="font-size:11px;color:#bbb">v0.5</span></p>
+  <p class="sub">クレカ・電子決済・ポイントを横断して最適な支払い方法を見つける &nbsp;·&nbsp; <span style="font-size:11px;color:#bbb">v0.6</span></p>
 
   <div class="nav">
     <button class="nav-btn active" onclick="go('pay',this)">最適な支払いを探す</button>
@@ -114,7 +101,8 @@ h1{font-size:21px;font-weight:700;margin-bottom:.2rem}
   <div id="pg-pay">
     <div class="sec">
       <div class="sec-title">店舗・サービスを入力</div>
-      <div class="s-row"><input type="text" id="q-pay" placeholder="例：セブンイレブン、マクドナルド、楽天市場…" oninput="activePayStore='';renderPay()"></div>
+      <input class="s-input" type="text" id="q-pay" placeholder="例：セブンイレブン、マクドナルド、楽天市場…" oninput="activePayStore='';activePayCat='';renderPayCatBtns();renderPayTags();renderPay()">
+      <div class="cat-row" id="pay-cat-btns"></div>
       <div class="tags" id="pay-tags"></div>
     </div>
     <div id="pay-result" style="display:none">
@@ -130,7 +118,7 @@ h1{font-size:21px;font-weight:700;margin-bottom:.2rem}
   <div id="pg-benefit" style="display:none">
     <div class="sec">
       <div class="sec-title">店舗・サービスを入力</div>
-      <div class="s-row"><input type="text" id="q-benefit" placeholder="例：東急ホテルズ、マルイ、ANA…" oninput="activeBenStore='';renderBenefit()"></div>
+      <input class="s-input" type="text" id="q-benefit" placeholder="例：東急ホテルズ、マルイ、ANA…" oninput="activeBenStore='';renderBenTags();renderBenefit()">
       <div class="tags" id="ben-tags"></div>
     </div>
     <div id="ben-result" style="display:none">
@@ -185,10 +173,7 @@ h1{font-size:21px;font-weight:700;margin-bottom:.2rem}
 </div>
 
 <script>
-// ==============================
-// DATA
-// ==============================
-const CATS = [
+const CATS=[
   {id:'hotel',label:'ホテル・旅館'},
   {id:'flight',label:'航空・旅行'},
   {id:'restaurant',label:'レストラン・グルメ'},
@@ -201,8 +186,7 @@ const CATS = [
   {id:'other',label:'その他'}
 ];
 
-// クレジットカード
-let cards = [
+let cards=[
   {id:'rakuten',name:'楽天カード',color:'#bf0000',icon:'楽',base:1.0,
    stores:[
     {store:'楽天市場',rate:3.0,note:'SPU基本3倍',cat:'ec'},
@@ -329,8 +313,7 @@ let cards = [
   }
 ];
 
-// 電子決済
-let payments = [
+let payments=[
   {id:'paypay',name:'PayPay',color:'#e02020',icon:'P',base:0.5,linkedCard:null,
    stores:[
     {store:'セブンイレブン',rate:1.5,note:'PayPaySTEP達成で最大2%',cat:'convenience'},
@@ -370,7 +353,6 @@ let payments = [
     {store:'サイゼリヤ',rate:1.0,note:'楽天ポイント還元',cat:'restaurant'},
     {store:'ガスト',rate:1.0,note:'楽天ポイント還元',cat:'restaurant'},
     {store:'すき家',rate:1.0,note:'楽天ポイント還元',cat:'restaurant'},
-    // マルイは楽天ペイ未対応のため除外
    ]
   },
   {id:'dpay',name:'d払い',color:'#e00060',icon:'d',base:0.5,linkedCard:null,
@@ -395,8 +377,7 @@ let payments = [
   }
 ];
 
-// ポイント使える場所
-const pointUses = {
+const pointUses={
   rakuten:{name:'楽天ポイント',color:'#bf0000',
    cats:[
     {cat:'ネット通販',items:[
@@ -474,43 +455,13 @@ const pointUses = {
   }
 };
 
-// ==============================
-// STATE
-// ==============================
 let activePayStore='', activeBenStore='', activePointType='', activeCat='', activePayCat='';
 
-function renderPayCatBtns(){
-  const usedCats = new Set();
-  cards.forEach(c=>c.stores.forEach(s=>{ if(s.cat) usedCats.add(s.cat); }));
-  payments.forEach(p=>p.stores.forEach(s=>{ if(s.cat) usedCats.add(s.cat); }));
-  const visible = CATS.filter(c=>usedCats.has(c.id));
-  document.getElementById('pay-cat-btns').innerHTML =
-    (visible.length ? visible : CATS).map(c=>`<button class="cat-btn${activePayCat===c.id?' on':''}" onclick="selPayCat('${c.id}')">${c.label}</button>`).join('');
-}
+function match(str,q){const s=str.toLowerCase(),ql=q.toLowerCase();return s.includes(ql)||ql.includes(s);}
+function typeLabel(t){return t==='discount'?'割引':t==='service'?'サービス':'ポイント';}
+function typeClass(t){return 'b b-'+(t==='discount'?'discount':t==='service'?'service':'point');}
 
-function selPayCat(id){
-  activePayCat = activePayCat===id?'':id;
-  activePayStore = '';
-  document.getElementById('q-pay').value='';
-  renderPayCatBtns();
-  renderPayTags();
-  renderPay();
-}
-
-// ==============================
-// HELPERS
-// ==============================
-function match(str, q){
-  const s=str.toLowerCase(), ql=q.toLowerCase();
-  return s.includes(ql)||ql.includes(s);
-}
-function typeLabel(t){ return t==='discount'?'割引':t==='service'?'サービス':t==='point'?'ポイント':'特典'; }
-function typeClass(t){ return 'b b-'+(t==='discount'?'discount':t==='service'?'service':'point'); }
-
-// ==============================
-// PAGE SWITCH
-// ==============================
-function go(page, el){
+function go(page,el){
   ['pay','benefit','point','cat','edit'].forEach(p=>document.getElementById('pg-'+p).style.display=p===page?'block':'none');
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   el.classList.add('active');
@@ -521,17 +472,31 @@ function go(page, el){
   if(page==='edit') renderEdit();
 }
 
-// ==============================
-// 最適な支払い
-// ==============================
+function renderPayCatBtns(){
+  const usedCats=new Set();
+  cards.forEach(c=>c.stores.forEach(s=>{if(s.cat)usedCats.add(s.cat);}));
+  payments.forEach(p=>p.stores.forEach(s=>{if(s.cat)usedCats.add(s.cat);}));
+  const visible=CATS.filter(c=>usedCats.has(c.id));
+  const list=visible.length?visible:CATS;
+  document.getElementById('pay-cat-btns').innerHTML=list.map(c=>`<button class="cat-btn${activePayCat===c.id?' on':''}" onclick="selPayCat('${c.id}')">${c.label}</button>`).join('');
+}
+
+function selPayCat(id){
+  activePayCat=activePayCat===id?'':id;
+  activePayStore='';
+  document.getElementById('q-pay').value='';
+  renderPayCatBtns();
+  renderPayTags();
+  renderPay();
+}
+
 function renderPayTags(){
   const s=new Set();
   cards.forEach(c=>c.stores.filter(r=>!activePayCat||r.cat===activePayCat).forEach(r=>s.add(r.store)));
   payments.forEach(p=>p.stores.filter(r=>!activePayCat||r.cat===activePayCat).forEach(r=>s.add(r.store)));
-  document.getElementById('pay-tags').innerHTML=[...s].sort().map(st=>
-    `<span class="tag${activePayStore===st?' on':''}" onclick="selPayStore('${st.replace(/'/g,"\\'")}')">${st}</span>`
-  ).join('');
+  document.getElementById('pay-tags').innerHTML=[...s].sort().map(st=>`<span class="tag${activePayStore===st?' on':''}" onclick="selPayStore('${st.replace(/'/g,"\\'")}')">${st}</span>`).join('');
 }
+
 function selPayStore(s){activePayStore=activePayStore===s?'':s;document.getElementById('q-pay').value='';renderPayTags();renderPay();}
 
 function renderPay(){
@@ -541,55 +506,37 @@ function renderPay(){
   if(!target){sec.style.display='none';return;}
   sec.style.display='block';
   document.getElementById('pay-lbl').textContent=`「${target}」での最適な支払い方法`;
-
-  // 店舗がどこかのデータに登録されているか確認
-  const anyCardHit = cards.some(c=>c.stores.find(s=>match(s.store,target)));
-  const anyPayHit  = payments.some(p=>p.stores.find(s=>match(s.store,target)));
-
-  if(!anyCardHit && !anyPayHit){
+  const anyCardHit=cards.some(c=>c.stores.find(s=>match(s.store,target)));
+  const anyPayHit=payments.some(p=>p.stores.find(s=>match(s.store,target)));
+  if(!anyCardHit&&!anyPayHit){
     document.getElementById('pay-tip').innerHTML='';
     document.getElementById('pay-list').innerHTML=`<div class="no-res">「${target}」は登録されていません。<br>「設定・編集」から店舗を追加できます。</div>`;
     return;
   }
-
   let results=[];
-
-  // クレカ：全カードを通常ポイント含めてリストアップ
   cards.forEach(c=>{
     const m=c.stores.find(s=>match(s.store,target));
-    const rate=m?m.rate:c.base;
-    const note=m?m.note:'通常ポイント';
-    results.push({label:c.name,rate,note,type:'card',color:c.color,icon:c.icon,combo:null,isDouble:false});
+    results.push({label:c.name,rate:m?m.rate:c.base,note:m?m.note:'通常ポイント',type:'card',color:c.color,icon:c.icon,combo:null,isDouble:false});
   });
-
-  // 電子決済：その店舗で「使える」と登録されているものだけ追加
   payments.forEach(p=>{
     const m=p.stores.find(s=>match(s.store,target));
-    if(!m) return; // 登録がない＝その店で使えない扱い
-    const appRate=m.rate;
-    const appNote=m.note;
+    if(!m)return;
     if(p.linkedCard){
       const cc=cards.find(c=>c.id===p.linkedCard);
       const cm=cc?cc.stores.find(s=>match(s.store,target)):null;
       const cardRate=cm?cm.rate:(p.linkedCardBonus||0.5);
-      const total=appRate+cardRate;
-      results.push({
-        label:p.name,rate:total,note:appNote,type:'pay',color:p.color,icon:p.icon,isDouble:true,
-        combo:`${p.name} ${appRate.toFixed(1)}% ＋ ${cc?cc.name:'カード'} ${cardRate.toFixed(1)}% ＝ 合計 ${total.toFixed(1)}%`
-      });
+      const total=m.rate+cardRate;
+      results.push({label:p.name,rate:total,note:m.note,type:'pay',color:p.color,icon:p.icon,isDouble:true,combo:`${p.name} ${m.rate.toFixed(1)}% ＋ ${cc?cc.name:'カード'} ${cardRate.toFixed(1)}% ＝ 合計 ${total.toFixed(1)}%`});
     } else {
-      results.push({label:p.name,rate:appRate,note:appNote,type:'pay',color:p.color,icon:p.icon,isDouble:false,combo:null});
+      results.push({label:p.name,rate:m.rate,note:m.note,type:'pay',color:p.color,icon:p.icon,isDouble:false,combo:null});
     }
   });
-
   results.sort((a,b)=>b.rate-a.rate);
   const top=results[0].rate;
   const best=results[0];
-
   let tipHTML=`<strong>${best.label}</strong> が最もお得です（合計還元率 <strong>${best.rate.toFixed(1)}%</strong>）。`;
-  if(best.isDouble) tipHTML+=`<br>楽天カードとの<strong>二重取り</strong>で、${best.combo}`;
+  if(best.isDouble)tipHTML+=`<br>楽天カードとの<strong>二重取り</strong>で、${best.combo}`;
   document.getElementById('pay-tip').innerHTML=tipHTML;
-
   document.getElementById('pay-list').innerHTML=results.map((r,i)=>`
     <div class="rc${r.rate===top&&i===0?' best':''}">
       <div class="rc-rank">${r.rate===top&&i===0?'★':i+1}</div>
@@ -604,26 +551,16 @@ function renderPay(){
         <div class="rc-note">${r.note}</div>
         ${r.combo?`<div class="rc-combo">${r.combo}</div>`:''}
       </div>
-      <div>
-        <div class="rc-rate">${r.rate.toFixed(1)}%</div>
-        <div class="rc-rate-lbl">還元率</div>
-      </div>
+      <div><div class="rc-rate">${r.rate.toFixed(1)}%</div><div class="rc-rate-lbl">還元率</div></div>
     </div>`).join('');
 }
 
-// ==============================
-// 優待・特典
-// ==============================
 function renderBenTags(){
   const s=new Set();
   cards.forEach(c=>(c.benefits||[]).forEach(b=>s.add(b.store)));
-  payments.forEach(p=>(p.benefits||[]).forEach(b=>s.add(b.store)));
-  document.getElementById('ben-tags').innerHTML=[...s].sort().map(st=>
-    `<span class="tag${activeBenStore===st?' on':''}" onclick="selBenStore('${st.replace(/'/g,"\\'")}')">${st}</span>`
-  ).join('');
+  document.getElementById('ben-tags').innerHTML=[...s].sort().map(st=>`<span class="tag${activeBenStore===st?' on':''}" onclick="selBenStore('${st.replace(/'/g,"\\'")}')">${st}</span>`).join('');
 }
 function selBenStore(s){activeBenStore=activeBenStore===s?'':s;document.getElementById('q-benefit').value='';renderBenTags();renderBenefit();}
-
 function renderBenefit(){
   const q=document.getElementById('q-benefit').value.trim();
   const target=q||activeBenStore;
@@ -631,37 +568,18 @@ function renderBenefit(){
   if(!target){sec.style.display='none';return;}
   sec.style.display='block';
   document.getElementById('ben-lbl').textContent=`「${target}」の優待・特典`;
-
   let html='';
-  // クレカ
   cards.forEach(c=>{
     const bs=(c.benefits||[]).filter(b=>match(b.store,target));
-    if(!bs.length) return;
-    html+=`<div class="benefit-card">
-      <div class="bc-name"><span class="icon-pill" style="background:${c.color}">${c.icon}</span>${c.name} <span class="b b-card">クレカ</span></div>
-      ${bs.map(b=>`<div class="bc-row"><span class="${typeClass(b.type)}">${typeLabel(b.type)}</span><div class="bc-detail">${b.text}${b.cond?`<div class="bc-cond">条件：${b.cond}</div>`:''}</div></div>`).join('')}
-    </div>`;
-  });
-  // 電子決済
-  payments.forEach(p=>{
-    const bs=(p.benefits||[]).filter(b=>match(b.store,target));
-    if(!bs.length) return;
-    html+=`<div class="benefit-card">
-      <div class="bc-name"><span class="icon-pill" style="background:${p.color}">${p.icon}</span>${p.name} <span class="b b-pay">電子決済</span></div>
-      ${bs.map(b=>`<div class="bc-row"><span class="${typeClass(b.type)}">${typeLabel(b.type)}</span><div class="bc-detail">${b.text}${b.cond?`<div class="bc-cond">条件：${b.cond}</div>`:''}</div></div>`).join('')}
-    </div>`;
+    if(!bs.length)return;
+    html+=`<div class="benefit-card"><div class="bc-name"><span class="icon-pill" style="background:${c.color}">${c.icon}</span>${c.name} <span class="b b-card">クレカ</span></div>${bs.map(b=>`<div class="bc-row"><span class="${typeClass(b.type)}">${typeLabel(b.type)}</span><div class="bc-detail">${b.text}${b.cond?`<div class="bc-cond">条件：${b.cond}</div>`:''}</div></div>`).join('')}</div>`;
   });
   document.getElementById('ben-list').innerHTML=html||'<div class="no-res">この店舗の優待情報はまだ登録されていません。</div>';
 }
 
-// ==============================
-// ポイントを使う
-// ==============================
 function renderPointSel(){
-  document.getElementById('pt-sel').innerHTML=Object.entries(pointUses).map(([id,pt])=>
-    `<button class="pt-btn${activePointType===id?' on':''}" style="${activePointType===id?`background:${pt.color}`:''}" onclick="selPoint('${id}')">${pt.name}</button>`
-  ).join('');
-  if(activePointType) renderPointUse(); else document.getElementById('pt-result').style.display='none';
+  document.getElementById('pt-sel').innerHTML=Object.entries(pointUses).map(([id,pt])=>`<button class="pt-btn${activePointType===id?' on':''}" style="${activePointType===id?`background:${pt.color}`:''}" onclick="selPoint('${id}')">${pt.name}</button>`).join('');
+  if(activePointType)renderPointUse();else document.getElementById('pt-result').style.display='none';
 }
 function selPoint(id){
   activePointType=activePointType===id?'':id;
@@ -673,25 +591,12 @@ function renderPointUse(){
   const pt=pointUses[activePointType];
   document.getElementById('pt-result').style.display='block';
   document.getElementById('pt-lbl').textContent=`${pt.name} が使える場所`;
-  document.getElementById('pt-list').innerHTML=pt.cats.map(cat=>`
-    <div class="use-group">
-      <div class="use-group-title">${cat.cat}</div>
-      ${cat.items.map(item=>`
-        <div class="use-row">
-          <div class="use-store">${item.store}</div>
-          <div class="use-note"><span class="b b-point">${item.note}</span>${item.cond?`<div class="use-cond">${item.cond}</div>`:''}</div>
-        </div>`).join('')}
-    </div>`).join('');
+  document.getElementById('pt-list').innerHTML=pt.cats.map(cat=>`<div class="use-group"><div class="use-group-title">${cat.cat}</div>${cat.items.map(item=>`<div class="use-row"><div class="use-store">${item.store}</div><div class="use-note"><span class="b b-point">${item.note}</span>${item.cond?`<div class="use-cond">${item.cond}</div>`:''}</div></div>`).join('')}</div>`).join('');
 }
 
-// ==============================
-// カテゴリ別
-// ==============================
 function renderCatBtns(){
-  document.getElementById('cat-btns').innerHTML=CATS.map(c=>
-    `<button class="cat-btn${activeCat===c.id?' on':''}" onclick="selCat('${c.id}')">${c.label}</button>`
-  ).join('');
-  if(activeCat) renderCatList(); else document.getElementById('cat-result').style.display='none';
+  document.getElementById('cat-btns').innerHTML=CATS.map(c=>`<button class="cat-btn${activeCat===c.id?' on':''}" onclick="selCat('${c.id}')">${c.label}</button>`).join('');
+  if(activeCat)renderCatList();else document.getElementById('cat-result').style.display='none';
 }
 function selCat(id){
   activeCat=activeCat===id?'':id;
@@ -704,93 +609,38 @@ function renderCatList(){
   document.getElementById('cat-result').style.display='block';
   document.getElementById('cat-lbl').textContent=`カテゴリ：${catLabel} の優待・特典一覧`;
   let html='';
-  // クレカ
   cards.forEach(c=>{
     const bs=(c.benefits||[]).filter(b=>b.cat===activeCat);
-    if(!bs.length) return;
-    html+=`<div class="cl-group">
-      <div class="cl-head"><span class="icon-pill" style="background:${c.color}">${c.icon}</span>${c.name}</div>
-      ${bs.map(b=>`<div class="cl-row"><div class="cl-store">${b.store}</div><div class="cl-right"><span class="${typeClass(b.type)}">${typeLabel(b.type)}</span> <span style="font-size:13px">${b.text}</span>${b.cond?`<div style="font-size:11px;color:#aaa">条件：${b.cond}</div>`:''}</div></div>`).join('')}
-    </div>`;
-  });
-  // 電子決済
-  payments.forEach(p=>{
-    const bs=(p.benefits||[]).filter(b=>b.cat===activeCat);
-    if(!bs.length) return;
-    html+=`<div class="cl-group">
-      <div class="cl-head"><span class="icon-pill" style="background:${p.color}">${p.icon}</span>${p.name} <span class="b b-pay" style="font-size:11px">電子決済</span></div>
-      ${bs.map(b=>`<div class="cl-row"><div class="cl-store">${b.store}</div><div class="cl-right"><span class="${typeClass(b.type)}">${typeLabel(b.type)}</span> <span style="font-size:13px">${b.text}</span>${b.cond?`<div style="font-size:11px;color:#aaa">条件：${b.cond}</div>`:''}</div></div>`).join('')}
-    </div>`;
+    if(!bs.length)return;
+    html+=`<div class="cl-group"><div class="cl-head"><span class="icon-pill" style="background:${c.color}">${c.icon}</span>${c.name}</div>${bs.map(b=>`<div class="cl-row"><div class="cl-store">${b.store}</div><div class="cl-right"><span class="${typeClass(b.type)}">${typeLabel(b.type)}</span> <span style="font-size:13px">${b.text}</span>${b.cond?`<div style="font-size:11px;color:#aaa">条件：${b.cond}</div>`:''}</div></div>`).join('')}</div>`;
   });
   document.getElementById('cat-list').innerHTML=html||'<div class="no-res">このカテゴリの優待情報はまだ登録されていません。</div>';
 }
 
-// ==============================
-// 編集
-// ==============================
 function renderEdit(){
-  // クレカ編集
-  document.getElementById('edit-cards').innerHTML=cards.map((c,ci)=>`
-    <div class="ec">
-      <div class="ec-head"><div class="ec-icon" style="background:${c.color}">${c.icon}</div>${c.name}</div>
-      <div class="slbl">基本還元率</div>
-      <div class="erow"><input type="number" step="0.1" min="0" max="20" value="${c.base}" onchange="cards[${ci}].base=parseFloat(this.value)||0.5">%</div>
-      <div class="slbl">店舗別ポイント還元</div>
-      <div id="ec-stores-${ci}"></div>
-      <button class="addbtn" onclick="addCardStore(${ci})">＋ 店舗追加</button>
-    </div>`).join('');
+  document.getElementById('edit-cards').innerHTML=cards.map((c,ci)=>`<div class="ec"><div class="ec-head"><div class="ec-icon" style="background:${c.color}">${c.icon}</div>${c.name}</div><div class="slbl">基本還元率</div><div class="erow"><input type="number" step="0.1" min="0" max="20" value="${c.base}" onchange="cards[${ci}].base=parseFloat(this.value)||0.5">%</div><div class="slbl">店舗別ポイント還元</div><div id="ec-stores-${ci}"></div><button class="addbtn" onclick="addCardStore(${ci})">＋ 店舗追加</button></div>`).join('');
   cards.forEach((_,ci)=>renderCardStores(ci));
-
-  // 電子決済編集
-  document.getElementById('edit-pays').innerHTML=payments.map((p,pi)=>`
-    <div class="ec">
-      <div class="ec-head"><div class="ec-icon" style="background:${p.color}">${p.icon}</div>${p.name}</div>
-      ${p.linkedCard?`<div style="font-size:12px;color:#1d9e75;margin-bottom:6px">楽天カード紐付け済み（二重取り対応）</div>`:''}
-      <div class="slbl">基本還元率</div>
-      <div class="erow"><input type="number" step="0.1" min="0" max="20" value="${p.base}" onchange="payments[${pi}].base=parseFloat(this.value)||0.5">%</div>
-      <div class="slbl">店舗別還元率</div>
-      <div id="ep-stores-${pi}"></div>
-      <button class="addbtn" onclick="addPayStore(${pi})">＋ 店舗追加</button>
-    </div>`).join('');
+  document.getElementById('edit-pays').innerHTML=payments.map((p,pi)=>`<div class="ec"><div class="ec-head"><div class="ec-icon" style="background:${p.color}">${p.icon}</div>${p.name}</div>${p.linkedCard?`<div style="font-size:12px;color:#1d9e75;margin-bottom:6px">楽天カード紐付け済み（二重取り対応）</div>`:''}<div class="slbl">基本還元率</div><div class="erow"><input type="number" step="0.1" min="0" max="20" value="${p.base}" onchange="payments[${pi}].base=parseFloat(this.value)||0.5">%</div><div class="slbl">店舗別還元率</div><div id="ep-stores-${pi}"></div><button class="addbtn" onclick="addPayStore(${pi})">＋ 店舗追加</button></div>`).join('');
   payments.forEach((_,pi)=>renderPayStores(pi));
 }
 function renderCardStores(ci){
   const el=document.getElementById('ec-stores-'+ci);
-  if(!el) return;
-  el.innerHTML=cards[ci].stores.map((s,si)=>`
-    <div class="erow">
-      <input type="text" value="${s.store}" onchange="cards[${ci}].stores[${si}].store=this.value">
-      <input type="number" step="0.1" min="0" max="50" value="${s.rate}" onchange="cards[${ci}].stores[${si}].rate=parseFloat(this.value)||1">%
-      <button class="sm" onclick="cards[${ci}].stores.splice(${si},1);renderEdit()">×</button>
-    </div>`).join('');
+  if(!el)return;
+  el.innerHTML=cards[ci].stores.map((s,si)=>`<div class="erow"><input type="text" value="${s.store}" onchange="cards[${ci}].stores[${si}].store=this.value"><input type="number" step="0.1" min="0" max="50" value="${s.rate}" onchange="cards[${ci}].stores[${si}].rate=parseFloat(this.value)||1">%<button class="sm" onclick="cards[${ci}].stores.splice(${si},1);renderEdit()">×</button></div>`).join('');
 }
 function renderPayStores(pi){
   const el=document.getElementById('ep-stores-'+pi);
-  if(!el) return;
-  el.innerHTML=payments[pi].stores.map((s,si)=>`
-    <div class="erow">
-      <input type="text" value="${s.store}" onchange="payments[${pi}].stores[${si}].store=this.value">
-      <input type="number" step="0.1" min="0" max="50" value="${s.rate}" onchange="payments[${pi}].stores[${si}].rate=parseFloat(this.value)||1">%
-      <button class="sm" onclick="payments[${pi}].stores.splice(${si},1);renderEdit()">×</button>
-    </div>`).join('');
+  if(!el)return;
+  el.innerHTML=payments[pi].stores.map((s,si)=>`<div class="erow"><input type="text" value="${s.store}" onchange="payments[${pi}].stores[${si}].store=this.value"><input type="number" step="0.1" min="0" max="50" value="${s.rate}" onchange="payments[${pi}].stores[${si}].rate=parseFloat(this.value)||1">%<button class="sm" onclick="payments[${pi}].stores.splice(${si},1);renderEdit()">×</button></div>`).join('');
 }
 function addCardStore(ci){cards[ci].stores.push({store:'店舗名',rate:2.0,note:'',cat:'other'});renderEdit();}
 function addPayStore(pi){payments[pi].stores.push({store:'店舗名',rate:1.0,note:'',cat:'other'});renderEdit();}
-function addCard(){
-  const n=prompt('カード名を入力');if(!n)return;
-  cards.push({id:'c'+Date.now(),name:n,color:'#888',icon:n[0],base:1.0,stores:[],benefits:[]});
-  renderEdit();
-}
-function addPayment(){
-  const n=prompt('決済アプリ名を入力');if(!n)return;
-  payments.push({id:'p'+Date.now(),name:n,color:'#555',icon:n[0],base:0.5,linkedCard:null,stores:[],benefits:[]});
-  renderEdit();
-}
+function addCard(){const n=prompt('カード名を入力');if(!n)return;cards.push({id:'c'+Date.now(),name:n,color:'#888',icon:n[0],base:1.0,stores:[],benefits:[]});renderEdit();}
+function addPayment(){const n=prompt('決済アプリ名を入力');if(!n)return;payments.push({id:'p'+Date.now(),name:n,color:'#555',icon:n[0],base:0.5,linkedCard:null,stores:[],benefits:[]});renderEdit();}
 
 // 初期化
 renderPayCatBtns();
 renderPayTags();
-renderPay();
 </script>
 </body>
 </html>
